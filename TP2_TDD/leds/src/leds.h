@@ -4,7 +4,7 @@
 #include "stdint.h"
 #include "stdbool.h"
 
-void ledsInit(uint16_t * direccion);
+bool ledsInit(uint16_t * direccion);
 bool ledTurnOnSingle(uint16_t led);
 bool ledTurnOffSingle(uint16_t led);
 

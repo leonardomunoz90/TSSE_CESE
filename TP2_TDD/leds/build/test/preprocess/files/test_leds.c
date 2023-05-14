@@ -2,8 +2,6 @@
 #include "/var/lib/gems/3.0.0/gems/ceedling-0.31.1/vendor/unity/src/unity.h"
 
 
-
-
 static uint16_t puerto_virtual;
 
 
@@ -30,7 +28,7 @@ void test_todos_los_leds_inician_apagados(void){
 
    ((void *)0)
 
-   ), (UNITY_UINT)(28), UNITY_DISPLAY_STYLE_HEX16);
+   ), (UNITY_UINT)(27), UNITY_DISPLAY_STYLE_HEX16);
 
 }
 
@@ -42,13 +40,13 @@ void test_todos_los_leds_inician_apagados(void){
 
 void test_prender_un_led (void){
 
-    do {if ((ledTurnOnSingle(2))) {} else {UnityFail( ((" Expected TRUE Was FALSE")), (UNITY_UINT)((UNITY_UINT)(34)));}} while(0);
+    do {if ((ledTurnOnSingle(2))) {} else {UnityFail( ((" Expected TRUE Was FALSE")), (UNITY_UINT)((UNITY_UINT)(33)));}} while(0);
 
     UnityAssertEqualNumber((UNITY_INT)(UNITY_INT16)((0x0002)), (UNITY_INT)(UNITY_INT16)((puerto_virtual)), (
 
    ((void *)0)
 
-   ), (UNITY_UINT)(35), UNITY_DISPLAY_STYLE_HEX16);
+   ), (UNITY_UINT)(34), UNITY_DISPLAY_STYLE_HEX16);
 
 }
 
@@ -62,13 +60,13 @@ void test_preder_y_apagar_un_led(void){
 
     ledTurnOnSingle(2);
 
-    do {if ((ledTurnOffSingle(2))) {} else {UnityFail( ((" Expected TRUE Was FALSE")), (UNITY_UINT)((UNITY_UINT)(42)));}} while(0);
+    do {if ((ledTurnOffSingle(2))) {} else {UnityFail( ((" Expected TRUE Was FALSE")), (UNITY_UINT)((UNITY_UINT)(41)));}} while(0);
 
     UnityAssertEqualNumber((UNITY_INT)(UNITY_INT16)((0x0000)), (UNITY_INT)(UNITY_INT16)((puerto_virtual)), (
 
    ((void *)0)
 
-   ), (UNITY_UINT)(43), UNITY_DISPLAY_STYLE_HEX16);
+   ), (UNITY_UINT)(42), UNITY_DISPLAY_STYLE_HEX16);
 
 }
 
@@ -92,7 +90,7 @@ void test_prender_y_apagar_varios_leds(void){
 
    ((void *)0)
 
-   ), (UNITY_UINT)(53), UNITY_DISPLAY_STYLE_HEX16);
+   ), (UNITY_UINT)(52), UNITY_DISPLAY_STYLE_HEX16);
 
 }
 
@@ -104,7 +102,7 @@ void test_consultar_led_encendido (void){
 
     ledTurnOnSingle(8);
 
-    do {if ((isLedOn(8))) {} else {UnityFail( ((" Expected TRUE Was FALSE")), (UNITY_UINT)((UNITY_UINT)(59)));}} while(0);
+    do {if ((isLedOn(8))) {} else {UnityFail( ((" Expected TRUE Was FALSE")), (UNITY_UINT)((UNITY_UINT)(58)));}} while(0);
 
 }
 
@@ -118,7 +116,7 @@ void test_consultar_led_apagado (void){
 
     ledTurnOffSingle(4);
 
-    do {if (!(isLedOn(4))) {} else {UnityFail( ((" Expected FALSE Was TRUE")), (UNITY_UINT)((UNITY_UINT)(66)));}} while(0);
+    do {if (!(isLedOn(4))) {} else {UnityFail( ((" Expected FALSE Was TRUE")), (UNITY_UINT)((UNITY_UINT)(65)));}} while(0);
 
 }
 
@@ -136,7 +134,7 @@ void test_encender_todos_los_leds(void){
 
    ((void *)0)
 
-   ), (UNITY_UINT)(73), UNITY_DISPLAY_STYLE_HEX16);
+   ), (UNITY_UINT)(72), UNITY_DISPLAY_STYLE_HEX16);
 
 }
 
@@ -156,7 +154,7 @@ void test_apagar_todos_los_leds(void){
 
    ((void *)0)
 
-   ), (UNITY_UINT)(81), UNITY_DISPLAY_STYLE_HEX16);
+   ), (UNITY_UINT)(80), UNITY_DISPLAY_STYLE_HEX16);
 
 }
 
@@ -178,7 +176,7 @@ void test_de_valores_limites (void){
 
    ((void *)0)
 
-   ), (UNITY_UINT)(90), UNITY_DISPLAY_STYLE_HEX16);
+   ), (UNITY_UINT)(89), UNITY_DISPLAY_STYLE_HEX16);
 
 }
 
@@ -202,7 +200,7 @@ void test_de_parametros_erroneos (void){
 
    ((void *)0)
 
-   ), (UNITY_UINT)(100), UNITY_DISPLAY_STYLE_HEX16);
+   ), (UNITY_UINT)(99), UNITY_DISPLAY_STYLE_HEX16);
 
 }
 
@@ -214,6 +212,14 @@ void test_de_parametros_erroneos (void){
 
 void test_error_de_inicializacion (void){
 
+    uint16_t *puerto_virtual;
 
+    puerto_virtual=
+
+                  ((void *)0)
+
+                      ;
+
+    do {if (!(ledsInit(puerto_virtual))) {} else {UnityFail( ((" Expected FALSE Was TRUE")), (UNITY_UINT)((UNITY_UINT)(107)));}} while(0);
 
 }

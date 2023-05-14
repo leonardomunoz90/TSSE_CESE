@@ -12,7 +12,6 @@
 
 #include "unity.h"
 #include "leds.h"
-#include "stdint.h"
 
 static uint16_t puerto_virtual;
 
@@ -103,5 +102,7 @@ void test_de_parametros_erroneos (void){
 //Inicializo mal para que devuelva false
 
 void test_error_de_inicializacion (void){
-
+    uint16_t *puerto_virtual;
+    puerto_virtual=NULL;
+    TEST_ASSERT_FALSE(ledsInit(puerto_virtual));
 }

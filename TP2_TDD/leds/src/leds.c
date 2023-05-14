@@ -1,4 +1,5 @@
 #include "leds.h"
+#include <stddef.h>
 
 #define INDEX_OFFSET 1
 #define FIRST_BIT 1
@@ -16,9 +17,15 @@ bool limitCheckCorrect (uint16_t led){
     return ((led>=FIRST_BIT) && (led <= LAST_BIT));
 }
 
-void ledsInit(uint16_t * direccion){
+bool ledsInit(uint16_t * direccion){
+    if(direccion != NULL){
     *direccion= ALL_LED_OFF;
     puerto_virtual = direccion;
+    return true;
+    }
+    else{
+        return false;
+    }
 }
 
 bool ledTurnOnSingle (uint16_t led){
