@@ -1,0 +1,8 @@
+{
+    "files.associations": {
+        "api_fsm.h": "c",
+        "stdio.h": "c",
+        "api_sht31.h": "c",
+        "api_delay.h": "c"
+    }
+}
