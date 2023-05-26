@@ -1,5 +1,0 @@
----
-build/test/mocks/mock_ports.c:
-- TEST
-Drivers/API/src/API_sht31.c:
-- TEST
