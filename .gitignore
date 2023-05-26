@@ -86,6 +86,10 @@ dkms.conf
 
 *~
 
+#Ignore build directories
+
+TP3_UnitTest/PCSE_FinalProject/SHT31_read/build/
+
 # temporary files which can be created if a process still has a handle open of a deleted file
 .fuse_hidden*
 
