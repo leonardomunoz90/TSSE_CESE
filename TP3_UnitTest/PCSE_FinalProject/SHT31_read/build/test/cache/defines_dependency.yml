@@ -1,7 +1,5 @@
 ---
-Drivers/API/src/API_delay.c:
+build/test/mocks/mock_ports.c:
 - TEST
 Drivers/API/src/API_sht31.c:
-- TEST
-Drivers/API/src/API_FSM.c:
 - TEST

@@ -1,115 +1,117 @@
-//Al inicializar la biblioteca todos los leds quedan apagados
-//Con todos los leds apagados, prendo led 2, verifico que el bit 1 vale 1
-//Con led 2 prendido,apago led 2, verifico que bit 1 vale 0
-//Con todos los leds apagados, prendo el 3, predo el 5, apago el 3 y apago el 7, quedebería quedar el bit 4 en 1 y el resto en cero
-//Prendo un led, consulto el estado y tiene que estar prendido
-//Apago un led, consulto el estado y tiene que estar apagado
-//Con todos los leds apagados, prendo todos los leds y verifico que se encienden
-//Con todos los leds prendidos, apagado todos los leds y verifico que se apagan
-//Apago todos los led, enciendo led 1, apago led 16 (Revisar los valores limites de los argumentos)
-//Enciendo led 5, 7, 33 y -17, debería ignorar los valores erroneos (Revisar que pasa con valores erroneos de los argumentos)
-//Inicializo mal para que devuelva false
-
 #include "unity.h"
-#include "API_FSM.h"
-#include "API_delay.h"
+#include "mock_ports.h"
 #include "API_sht31.h"
 
-static uint16_t puerto_virtual;
+static sht31_t sht31Sensor;
 
-//Al inicializar la biblioteca todos los leds quedan apagados
-
-/*
-
+// Inicializa el sensor para todos los test y evitar repetir código
 void setUp(void){
-    ledsInit(&puerto_virtual);
+    initSensorData(&sht31Sensor);
 }
 
-void test_todos_los_leds_inician_apagados(void){
-    uint16_t puerto_virtual=0xFFFF;
-    ledsInit(&puerto_virtual);
-    TEST_ASSERT_EQUAL_HEX16(0x0000,puerto_virtual);
+//Prueba de iniciliación correcta de variable de sensor
+
+void test_sensor_init(void){
+    sht31Sensor.errState=true;
+    sht31Sensor.humidity=0xFF;
+    sht31Sensor.temperature=0xFF;
+    sht31Sensor.readCMD=0xFF;
+
+    initSensorData(&sht31Sensor);
+
+    TEST_ASSERT_EQUAL_HEX16(sht31Sensor.humidity,0x00);
+    TEST_ASSERT_EQUAL_HEX16(sht31Sensor.temperature,0x00);
+    TEST_ASSERT_EQUAL(sht31Sensor.errState,false);
+    TEST_ASSERT_EQUAL(sht31Sensor.readCMD,SS_CLOCK_STR_DIS_HGH_REP);
 }
 
-//Con todos los leds apagados, prendo led 2, verifico que el bit 1 vale 1
+//Prueba de inicialización de nueva medición del sensor, en caso de que el comando I2C 
+//envíe un NACK, se debe colocar la bandera de error en true  
 
-void test_prender_un_led (void){
-    TEST_ASSERT_TRUE(ledTurnOnSingle(2));
-    TEST_ASSERT_EQUAL_HEX16(0x0002,puerto_virtual);
+void test_new_measure_command_fail (void){
+    
+    sendI2C_CMD_ExpectAnyArgsAndReturn(true);
+
+    initNewMeasure(&sht31Sensor);
+    TEST_ASSERT_EQUAL(true,sht31Sensor.errState);
 }
 
-//Con led 2 prendido,apago led 2, verifico que bit 1 vale 0
+//Prueba de inicialización de nueva medición del sensor, en caso de que el comando I2C 
+//envíe un ACK, se debe colocar la bandera de error en false  
 
-void test_preder_y_apagar_un_led(void){
-    ledTurnOnSingle(2);
-    TEST_ASSERT_TRUE(ledTurnOffSingle(2));
-    TEST_ASSERT_EQUAL_HEX16(0x0000,puerto_virtual);
+void test_new_measure_command_ok (void){
+    
+    sendI2C_CMD_ExpectAnyArgsAndReturn(false);
+
+    initNewMeasure(&sht31Sensor);
+    TEST_ASSERT_EQUAL(false,sht31Sensor.errState);
 }
 
-//Con todos los leds apagados, prendo el 3, predo el 5, apago el 3 y apago el 7, quedebería quedar el bit 4 en 1 y el resto en cero
+//Prueba de que por más que previamente se tenga una medición correcta del sensor,
+//si ocurre un error en la medición cambia el estado del flag errState y de
+//las variables de humedad y temperatura
 
-void test_prender_y_apagar_varios_leds(void){
-    ledTurnOnSingle(3);
-    ledTurnOnSingle(5);
-    ledTurnOffSingle(3);
-    ledTurnOffSingle(7);
-    TEST_ASSERT_EQUAL_HEX16(0x0010,puerto_virtual);
+void test_read_data_fail (void){
+
+    sht31Sensor.errState=false;
+    sht31Sensor.humidity=0xAA;
+    sht31Sensor.temperature=0xAA;
+
+    readI2C_Data_ExpectAnyArgsAndReturn(true);
+
+    readSensorData(&sht31Sensor);
+
+    TEST_ASSERT_EQUAL_HEX16(0x00,sht31Sensor.humidity);
+    TEST_ASSERT_EQUAL_HEX16(0x00,sht31Sensor.temperature);
+    TEST_ASSERT_EQUAL(true,sht31Sensor.errState);
 }
 
-//Prendo un led, consulto el estado y tiene que estar prendido
-void test_consultar_led_encendido (void){
-    ledTurnOnSingle(8);
-    TEST_ASSERT_TRUE(isLedOn(8));
+//Al contrario que el test anterior, busca validar que si anteriormente se tenía una
+//medición con error y luego se logra una medición correcta, cambia el flag errState
+//y lo valores de las variables humedad y temperatura a los emulados con un arreglo que 
+//simula la trama de recepción por I2C
+
+void test_read_data_ok (void){
+
+    uint8_t sensorReturnFrame[] = {0x12,0x34,0x56,0x78,0x9A,0xBC};
+
+    sht31Sensor.errState=true;
+
+    readI2C_Data_ExpectAnyArgsAndReturn(false);
+    readI2C_Data_ReturnArrayThruPtr_data(sensorReturnFrame,6);
+
+    readSensorData(&sht31Sensor);
+
+    TEST_ASSERT_EQUAL_HEX16(0x1234,sht31Sensor.temperature);
+    TEST_ASSERT_EQUAL_HEX16(0x789A,sht31Sensor.humidity);
+    TEST_ASSERT_EQUAL(false,sht31Sensor.errState);
 }
 
-//Apago un led, consulto el estado y tiene que estar apagado
-void test_consultar_led_apagado (void){
-    ledTurnOnSingle(4);
-    ledTurnOffSingle(4);
-    TEST_ASSERT_FALSE(isLedOn(4));
+//Busca validad que se genera una trama de error en caso de que el flag errState esté en true
+
+void test_error_data_message(void){
+
+    uint8_t buf_msg[50] ="Nunca debería verse este mensaje\r\n";
+
+    sht31Sensor.errState=true;
+    sensorDataString(&sht31Sensor,buf_msg);
+
+    TEST_ASSERT_EQUAL_STRING("Sensor error\r\n",buf_msg);
 }
 
-//Con todos los leds apagados, prendo todos los leds y verifico que se encienden
+//Busca valida la cadena que se genera en caso de que no haya un error en el flag
+//errState. Además valida que las funciones internas de conversión de los valores 
+//en binario del sensor se corresponda con un valor de temperatura y humedad conocido
+//(fórmula extraida de la hoja de datos)
 
-void test_encender_todos_los_leds(void){
-    ledTurnOnAll();
-    TEST_ASSERT_EQUAL_HEX16(0xFFFF,puerto_virtual);
+void test_correct_data_message(void){
+    uint8_t buf_msg[50];
+
+    sht31Sensor.errState=false;
+    sht31Sensor.temperature=0x1234;     //Equivalente a -32.56°C
+    sht31Sensor.humidity=0x5678;        //Equivalente a humedad de 33.78%
+
+    sensorDataString(&sht31Sensor,buf_msg);
+
+    TEST_ASSERT_EQUAL_STRING("Temperature:-32.56 - Humidity:33.78\r\n",buf_msg);
 }
-
-//Con todos los leds prendidos, apagado todos los leds y verifico que se apagan
-
-void test_apagar_todos_los_leds(void){
-    ledTurnOnAll();
-    ledTurnOffAll();
-    TEST_ASSERT_EQUAL_HEX16(0x0000,puerto_virtual);
-}
-
-//Apago todos los led, enciendo led 1, enciendo led 16 
-
-void test_de_valores_limites (void){
-    ledTurnOffAll();
-    ledTurnOnSingle(1);
-    ledTurnOnSingle(16);
-    TEST_ASSERT_EQUAL_HEX16(0x8001,puerto_virtual);
-}
-
-//Enciendo led 5, 7, 33 y -17, debería ignorar los valores erroneos
-
-void test_de_parametros_erroneos (void){
-    ledTurnOnSingle(5);
-    ledTurnOnSingle(7);
-    ledTurnOnSingle(33);
-    ledTurnOnSingle(-17);
-    TEST_ASSERT_EQUAL_HEX16(0x0050,puerto_virtual);
-}
-
-//Inicializo mal para que devuelva false
-
-void test_error_de_inicializacion (void){
-    uint16_t *puerto_virtual;
-    puerto_virtual=NULL;
-    TEST_ASSERT_FALSE(ledsInit(puerto_virtual));
-}
-
-*/
-

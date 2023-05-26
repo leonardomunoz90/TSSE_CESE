@@ -2,6 +2,8 @@
 
 /*=======Automagically Detected Files To Include=====*/
 #include "unity.h"
+#include "cmock.h"
+#include "mock_ports.h"
 
 int GlobalExpectCount;
 int GlobalVerifyOrder;
@@ -10,6 +12,13 @@ char* GlobalOrderError;
 /*=======External Functions This Runner Calls=====*/
 extern void setUp(void);
 extern void tearDown(void);
+extern void test_sensor_init(void);
+extern void test_new_measure_command_fail (void);
+extern void test_new_measure_command_ok (void);
+extern void test_read_data_fail (void);
+extern void test_read_data_ok (void);
+extern void test_error_data_message(void);
+extern void test_correct_data_message(void);
 
 
 /*=======Mock Management=====*/
@@ -18,16 +27,16 @@ static void CMock_Init(void)
   GlobalExpectCount = 0;
   GlobalVerifyOrder = 0;
   GlobalOrderError = NULL;
+  mock_ports_Init();
 }
 static void CMock_Verify(void)
 {
+  mock_ports_Verify();
 }
 static void CMock_Destroy(void)
 {
+  mock_ports_Destroy();
 }
-
-/*=======Setup (stub)=====*/
-void setUp(void) {}
 
 /*=======Teardown (stub)=====*/
 void tearDown(void) {}
@@ -48,10 +57,46 @@ void verifyTest(void)
   CMock_Verify();
 }
 
+/*=======Test Runner Used To Run Each Test=====*/
+static void run_test(UnityTestFunction func, const char* name, UNITY_LINE_TYPE line_num)
+{
+    Unity.CurrentTestName = name;
+    Unity.CurrentTestLineNumber = line_num;
+#ifdef UNITY_USE_COMMAND_LINE_ARGS
+    if (!UnityTestMatches())
+        return;
+#endif
+    Unity.NumberOfTests++;
+    UNITY_CLR_DETAILS();
+    UNITY_EXEC_TIME_START();
+    CMock_Init();
+    if (TEST_PROTECT())
+    {
+        setUp();
+        func();
+    }
+    if (TEST_PROTECT())
+    {
+        tearDown();
+        CMock_Verify();
+    }
+    CMock_Destroy();
+    UNITY_EXEC_TIME_STOP();
+    UnityConcludeTest();
+}
+
 /*=======MAIN=====*/
 int main(void)
 {
   UnityBegin("test_API_sth31.c");
+  run_test(test_sensor_init, "test_sensor_init", 14);
+  run_test(test_new_measure_command_fail , "test_new_measure_command_fail ", 31);
+  run_test(test_new_measure_command_ok , "test_new_measure_command_ok ", 42);
+  run_test(test_read_data_fail , "test_read_data_fail ", 54);
+  run_test(test_read_data_ok , "test_read_data_ok ", 74);
+  run_test(test_error_data_message, "test_error_data_message", 92);
+  run_test(test_correct_data_message, "test_correct_data_message", 107);
 
+  CMock_Guts_MemFreeFinal();
   return UnityEnd();
 }

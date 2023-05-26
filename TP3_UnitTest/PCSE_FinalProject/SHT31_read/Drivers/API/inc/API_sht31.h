@@ -8,7 +8,6 @@
 #include "stdint.h"
 #include "stdbool.h"
 #include <stdio.h>
-#include "API_delay.h"
 
 
 #define CMD_OK 0
@@ -79,21 +78,21 @@
 #define HEATER_STATUS_MASK  0x2000
 #define RH_ALRT_MASK        0x0800
 
+typedef bool bool_t;
+
 typedef struct{
-	float temperature;	//current temperature
-	float humidity;		//current humidity
+	uint16_t temperature;	//current temperature
+	uint16_t humidity;		//current humidity
 	uint16_t readCMD;	//single shot read command
 	bool_t errState;	//asserted when there is a error in sensor communication commands
 }sht31_t;
 
 //Functions
 
+void initSensorData(sht31_t * sht31Sensor);
 void initNewMeasure(sht31_t * sht31Sensor);	//sends new measure command
 void readSensorData(sht31_t * sht31Sensor);	//read data from sensor (temperature, humidity and CRC)
 void sensorDataString(sht31_t * sht31Sensor ,uint8_t * buf); //creates data or error string
-uint8_t sendI2C_CMD (uint8_t addr,uint8_t * sendCMD,int8_t size);	//abstracts HAL I2C write
-uint8_t readI2C_Data (uint8_t addr,uint8_t * data,int8_t size);		//abstracts HAL I2C read
-void sendStringUart(uint8_t * buf, uint8_t size);
 
 #define CMD_BYTES_SIZE 2	//every write command to sensor is 2 bytes long
 #define DATA_BYTES_SIZE 6	//two bytes from temperature and humidity and one byte CRC each

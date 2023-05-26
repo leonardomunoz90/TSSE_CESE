@@ -4,31 +4,31 @@
   :file: test_API_sth31.c
 :successes:
 - :test: test_sensor_init
-  :line: 14
+  :line: 16
   :message: ''
   :unity_test_time: 0
 - :test: 'test_new_measure_command_fail '
-  :line: 31
+  :line: 33
   :message: ''
   :unity_test_time: 0
 - :test: 'test_new_measure_command_ok '
-  :line: 42
+  :line: 44
   :message: ''
   :unity_test_time: 0
 - :test: 'test_read_data_fail '
-  :line: 54
+  :line: 56
   :message: ''
   :unity_test_time: 0
 - :test: 'test_read_data_ok '
-  :line: 74
+  :line: 76
   :message: ''
   :unity_test_time: 0
 - :test: test_error_data_message
-  :line: 92
+  :line: 94
   :message: ''
   :unity_test_time: 0
 - :test: test_correct_data_message
-  :line: 107
+  :line: 109
   :message: ''
   :unity_test_time: 0
 :failures: []
@@ -39,4 +39,4 @@
   :failed: 0
   :ignored: 0
 :stdout: []
-:time: 0.0014599950000047102
+:time: 0.001250395998795284

@@ -34,11 +34,9 @@
     - +:test/**
     - -:test/support
   :source:
-    - -:Drivers/API/src/**
-    - -:Core/Src/**
+    - Drivers/API/src/**
   :include:
     - Drivers/API/inc/**
-    - Core/Inc/**
   :support:
     - test/support
   :libraries: []
@@ -62,6 +60,11 @@
   :plugins:
     - :ignore
     - :callback
+    - :ignore_arg
+    - :return_thru_ptr
+    - :expect_any_args
+    - :ignore_arg
+    - :array
   :treat_as:
     uint8:    HEX8
     uint16:   HEX16
@@ -73,11 +76,19 @@
 # You will need to have gcov and gcovr both installed to make it work.
 # For more information on these options, see docs in plugins/gcov
 :gcov:
+  :utilities:         
+    - gcovr         
+    - ReportGenerator 
   :reports:
+    - HtmlBasic
     - HtmlDetailed
   :gcovr:
+    :html_report_type:  detailed
     :html_medium_threshold: 75
     :html_high_threshold: 90
+
+  :html_report: TRUE
+  :html_report_type: detailed
 
 #:tools:
 # Ceedling defaults to using gcc for compiling, linking, etc.
