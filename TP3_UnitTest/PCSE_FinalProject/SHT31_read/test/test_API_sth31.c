@@ -73,6 +73,13 @@ void test_read_data_fail (void){
 
 void test_read_data_ok (void){
 
+    // La secuencia de tramas de 8 bits devuelta por el sensor es:
+    //{ MSByte Temperature,LSByte Temperature, Temperature CRC,
+    // MSByte Humidity,LSByte Humidity, Humidity CRC }
+
+    // En este caso no se implementó la función de calculo de CRC por lo que sus valores
+    // son aribitrarios
+
     uint8_t sensorReturnFrame[] = {0x12,0x34,0x56,0x78,0x9A,0xBC};
 
     sht31Sensor.errState=true;
@@ -115,3 +122,5 @@ void test_correct_data_message(void){
 
     TEST_ASSERT_EQUAL_STRING("Temperature:-32.56 - Humidity:33.78\r\n",buf_msg);
 }
+
+//Para generación de reporte gcovr --html -o coverage.html -f Drivers
