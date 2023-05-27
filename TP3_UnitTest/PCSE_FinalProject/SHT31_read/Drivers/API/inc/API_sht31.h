@@ -9,7 +9,6 @@
 #include "stdbool.h"
 #include <stdio.h>
 
-
 #define CMD_OK 0
 #define CMD_ERR -1
 #ifndef API_SHT31_SRC_API_SHT31_H_
@@ -23,7 +22,7 @@
 #define DEFAULT_ADDR 0x44
 #define ADDR_HIGH 0x45
 
-//commands for single shot (SS) measurement
+// commands for single shot (SS) measurement
 
 #define SS_CLOCK_STR_EN_HGH_REP 0x2C06
 #define SS_CLOCK_STR_EN_MED_REP 0x2C0D
@@ -33,7 +32,7 @@
 #define SS_CLOCK_STR_DIS_MED_REP 0x240B
 #define SS_CLOCK_STR_DIS_LOW_REP 0x2416
 
-//commands for periodic (PER) measurement
+// commands for periodic (PER) measurement
 
 #define PER_HGH_REP_05_MPS 0x2032
 #define PER_MED_REP_05_MPS 0x2024
@@ -55,56 +54,56 @@
 #define PER_MED_REP_10_MPS 0x2721
 #define PER_LOW_REP_10_MPS 0x272A
 
-//accelerated response time command
+// accelerated response time command
 #define ACC_RESPONSE_TIME 0x2B32
 
-//break command, stop periodic measurement
+// break command, stop periodic measurement
 #define BREAK_CMD 0x3093
 
-//soft reset command
+// soft reset command
 #define SOFT_RST 0x30A2
 #define GENERAL_CALL_RST 0x0006
 
-//heater commands (write command)
+// heater commands (write command)
 #define HEATER_EN 0x306D
 #define HEATER_DIS 0x3066
 
-//readout status register (write command)
+// readout status register (write command)
 #define READ_STATUS_REG 0xF32D
 
-//status reg mask fields
+// status reg mask fields
 
-#define ALRT_PENDING_MASK   0x8000
-#define HEATER_STATUS_MASK  0x2000
-#define RH_ALRT_MASK        0x0800
+#define ALRT_PENDING_MASK 0x8000
+#define HEATER_STATUS_MASK 0x2000
+#define RH_ALRT_MASK 0x0800
 
 typedef bool bool_t;
 
-typedef struct{
-	uint16_t temperature;	//current temperature
-	uint16_t humidity;		//current humidity
-	uint16_t readCMD;	//single shot read command
-	bool_t errState;	//asserted when there is a error in sensor communication commands
-}sht31_t;
+typedef struct
+{
+	uint16_t temperature; // current temperature
+	uint16_t humidity;	  // current humidity
+	uint16_t readCMD;	  // single shot read command
+	bool_t errState;	  // asserted when there is a error in sensor communication commands
+} sht31_t;
 
-//Functions
+// Functions
 
-void initSensorData(sht31_t * sht31Sensor);
-void initNewMeasure(sht31_t * sht31Sensor);	//sends new measure command
-void readSensorData(sht31_t * sht31Sensor);	//read data from sensor (temperature, humidity and CRC)
-void sensorDataString(sht31_t * sht31Sensor ,uint8_t * buf); //creates data or error string
+void initSensorData(sht31_t *sht31Sensor);
+void initNewMeasure(sht31_t *sht31Sensor);				   // sends new measure command
+void readSensorData(sht31_t *sht31Sensor);				   // read data from sensor (temperature, humidity and CRC)
+void sensorDataString(sht31_t *sht31Sensor, uint8_t *buf); // creates data or error string
 
-#define CMD_BYTES_SIZE 2	//every write command to sensor is 2 bytes long
-#define DATA_BYTES_SIZE 6	//two bytes from temperature and humidity and one byte CRC each
+#define CMD_BYTES_SIZE 2  // every write command to sensor is 2 bytes long
+#define DATA_BYTES_SIZE 6 // two bytes from temperature and humidity and one byte CRC each
 
-//data response position
+// data response position
 
 #define MSB_TEMPERATURE 0
 #define LSB_TEMPERATURE 1
-#define TEMPERATURE_CRC	2
-#define MSB_HUMIDITY 	3
-#define LSB_HUMIDITY 	4
-#define HUMIDITY_CRC	5
-
+#define TEMPERATURE_CRC 2
+#define MSB_HUMIDITY 3
+#define LSB_HUMIDITY 4
+#define HUMIDITY_CRC 5
 
 #endif /* API_SHT31_SRC_API_SHT31_H_ */

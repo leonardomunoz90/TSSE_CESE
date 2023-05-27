@@ -9,53 +9,67 @@
 
 static uint16_t *puerto_virtual;
 
-uint16_t indexToMask(uint16_t led){
- return (FIRST_BIT<< (led-INDEX_OFFSET));
+uint16_t indexToMask(uint16_t led)
+{
+    return (FIRST_BIT << (led - INDEX_OFFSET));
 }
 
-bool limitCheckCorrect (uint16_t led){
-    return ((led>=FIRST_BIT) && (led <= LAST_BIT));
+bool limitCheckCorrect(uint16_t led)
+{
+    return ((led >= FIRST_BIT) && (led <= LAST_BIT));
 }
 
-bool ledsInit(uint16_t * direccion){
-    if(direccion != NULL){
-    *direccion= ALL_LED_OFF;
-    puerto_virtual = direccion;
-    return true;
+bool ledsInit(uint16_t *direccion)
+{
+    if (direccion != NULL)
+    {
+        *direccion = ALL_LED_OFF;
+        puerto_virtual = direccion;
+        return true;
     }
-    else{
+    else
+    {
         return false;
     }
 }
 
-bool ledTurnOnSingle (uint16_t led){
-    if(limitCheckCorrect(led)){
+bool ledTurnOnSingle(uint16_t led)
+{
+    if (limitCheckCorrect(led))
+    {
         *puerto_virtual |= indexToMask(led);
         return true;
     }
-    else{
+    else
+    {
         return false;
     }
 }
 
-bool ledTurnOffSingle (uint16_t led){
-    if(limitCheckCorrect(led)){
+bool ledTurnOffSingle(uint16_t led)
+{
+    if (limitCheckCorrect(led))
+    {
         *puerto_virtual &= ~indexToMask(led);
         return true;
     }
-    else{
+    else
+    {
         return false;
     }
 }
 
-bool isLedOn(uint16_t led){
-    return ((*puerto_virtual & indexToMask(led))==indexToMask(led));
+bool isLedOn(uint16_t led)
+{
+    return ((*puerto_virtual & indexToMask(led)) == indexToMask(led));
 }
 
-void ledTurnOnAll (void){
-    *puerto_virtual=ALL_LED_ON;
+void ledTurnOnAll(void)
+{
+    *puerto_virtual = ALL_LED_ON;
 }
 
-void ledTurnOffAll (void){
-    *puerto_virtual=ALL_LED_OFF;
+void ledTurnOffAll(void)
+{
+    *puerto_virtual = ALL_LED_OFF;
 }
