@@ -23,8 +23,8 @@ bool ledsInit(uint16_t *direccion)
 {
     if (direccion != NULL)
     {
-        *direccion = ALL_LED_OFF;
         puerto_virtual = direccion;
+        ledTurnOffAll();
         return true;
     }
     else
