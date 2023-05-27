@@ -9,7 +9,7 @@ void setUp(void){
     initSensorData(&sht31Sensor);
 }
 
-//Prueba de iniciliación correcta de variable de sensor
+//Prueba de iniciliación correcta de la estructura de sensor
 
 void test_sensor_init(void){
     sht31Sensor.errState=true;
@@ -26,7 +26,7 @@ void test_sensor_init(void){
 }
 
 //Prueba de inicialización de nueva medición del sensor, en caso de que el comando I2C 
-//envíe un NACK, se debe colocar la bandera de error en true  
+//envíe un NACK, se debe colocar la bandera de errState en true  
 
 void test_new_measure_command_fail (void){
     
@@ -37,7 +37,7 @@ void test_new_measure_command_fail (void){
 }
 
 //Prueba de inicialización de nueva medición del sensor, en caso de que el comando I2C 
-//envíe un ACK, se debe colocar la bandera de error en false  
+//envíe un ACK, se debe colocar la bandera de errState en false  
 
 void test_new_measure_command_ok (void){
     
@@ -68,7 +68,7 @@ void test_read_data_fail (void){
 
 //Al contrario que el test anterior, busca validar que si anteriormente se tenía una
 //medición con error y luego se logra una medición correcta, cambia el flag errState
-//y lo valores de las variables humedad y temperatura a los emulados con un arreglo que 
+//y los valores de las variables humedad y temperatura a los emulados con un arreglo que 
 //simula la trama de recepción por I2C
 
 void test_read_data_ok (void){
@@ -106,7 +106,7 @@ void test_error_data_message(void){
     TEST_ASSERT_EQUAL_STRING("Sensor error\r\n",buf_msg);
 }
 
-//Busca valida la cadena que se genera en caso de que no haya un error en el flag
+//Busca validar la cadena que se genera en caso de que no haya un error en el flag
 //errState. Además valida que las funciones internas de conversión de los valores 
 //en binario del sensor se corresponda con un valor de temperatura y humedad conocido
 //(fórmula extraida de la hoja de datos)
