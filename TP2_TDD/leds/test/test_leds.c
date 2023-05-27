@@ -25,7 +25,7 @@ void setUp(void)
 void test_todos_los_leds_inician_apagados(void)
 {
     uint16_t puerto_virtual = 0xFFFF;
-    ledsInit(&puerto_virtual);
+    TEST_ASSERT_TRUE(ledsInit(&puerto_virtual));
     TEST_ASSERT_EQUAL_HEX16(0x0000, puerto_virtual);
 }
 
@@ -42,6 +42,7 @@ void test_prender_un_led(void)
 void test_preder_y_apagar_un_led(void)
 {
     ledTurnOnSingle(2);
+
     TEST_ASSERT_TRUE(ledTurnOffSingle(2));
     TEST_ASSERT_EQUAL_HEX16(0x0000, puerto_virtual);
 }
@@ -93,20 +94,22 @@ void test_apagar_todos_los_leds(void)
 
 void test_de_valores_limites(void)
 {
-    ledTurnOffAll();
-    ledTurnOnSingle(1);
-    ledTurnOnSingle(16);
+    TEST_ASSERT_TRUE(ledTurnOnSingle(1));
+    TEST_ASSERT_TRUE(ledTurnOnSingle(16));
     TEST_ASSERT_EQUAL_HEX16(0x8001, puerto_virtual);
 }
 
-// Enciendo led 5, 7, 33 y -17, debería ignorar los valores erroneos
+// Enciendo led 5, 7, 33 y apago el -17, debería ignorar los valores erroneos
 
 void test_de_parametros_erroneos(void)
 {
     ledTurnOnSingle(5);
     ledTurnOnSingle(7);
-    ledTurnOnSingle(33);
-    ledTurnOnSingle(-17);
+
+    TEST_ASSERT_FALSE(ledTurnOnSingle(33));
+    TEST_ASSERT_FALSE(ledTurnOffSingle(0));
+    TEST_ASSERT_FALSE(ledTurnOffSingle(-17));
+
     TEST_ASSERT_EQUAL_HEX16(0x0050, puerto_virtual);
 }
 
